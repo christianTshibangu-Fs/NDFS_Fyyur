@@ -12,6 +12,7 @@ import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
+from flask_migrate import Migrate
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -20,38 +21,63 @@ app = Flask(__name__)
 moment = Moment(app)
 app.config.from_object('config')
 db = SQLAlchemy(app)
-
+migrate = Migrate(app, db)
 # TODO: connect to a local postgresql database
 
 #----------------------------------------------------------------------------#
 # Models.
 #----------------------------------------------------------------------------#
 
+
+shows =db.Table('shows',
+    db.Column('id', db.Integer, primary_key=True),
+    db.Column('venue_id', db.Integer, db.ForeignKey('venues.id')),
+    db.Column('artiste_id', db.Integer, db.ForeignKey('artistes.id')),
+    db.Column('date_debut', db.DateTime, nullable=True)
+)
+
+
 class Venue(db.Model):
-    __tablename__ = 'Venue'
+    __tablename__ = 'venues'
+    id = db.Column(db.Integer, primary_key =True)
+    name = db.Column(db.String(50), nullable=False)
+    adresse = db.Column(db.String(50), nullable=False)
+    id_city =db.Column(db.Integer, db.ForeignKey('cities.id'), nullable=False)
+    phone = db.Column(db.String(20), unique=True)
+    genre = db.Column(db.PickleType, nullable=False)
+    facebook_link = db.Column(db.String(150), unique=True)
+    image_link = db.Column(db.String(150))
+    web_link = db.Column(db.String(250))
+    search_talents =db.Column(db.Boolean, default=True)
+    search_description =db.Column(db.Text)
+    artistes = db.relationship('Artiste', secondary=shows, backref=db.backref('venues', lazy=True))
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    city = db.Column(db.String(120))
-    state = db.Column(db.String(120))
-    address = db.Column(db.String(120))
-    phone = db.Column(db.String(120))
-    image_link = db.Column(db.String(500))
-    facebook_link = db.Column(db.String(120))
+class Artiste(db.Model):
+    __tablename__ = 'artistes'
+    id = db.Column(db.Integer, primary_key =True)
+    name = db.Column(db.String(50), nullable=False)
+    id_city =db.Column(db.Integer, db.ForeignKey('cities.id'))
+    phone = db.Column(db.String(15), unique=True)
+    genre = db.Column(db.PickleType, nullable=False)
+    facebook_link = db.Column(db.String(150), unique=True)
+    image_link = db.Column(db.String(150))
+    web_link = db.Column(db.String(250))
+    search_venues =db.Column(db.Boolean, default=True)
+    search_description =db.Column(db.Text)
 
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+class City(db.Model):
+    __tablename__ = 'cities'
+    id = db.Column(db.Integer, primary_key =True)
+    city =db.Column(db.String(100), nullable=False)
+    id_state = db.Column(db.Integer, db.ForeignKey('states.id'))
 
-class Artist(db.Model):
-    __tablename__ = 'Artist'
+class State(db.Model):
+    __tablename__ = 'states'
+    id = db.Column(db.Integer, primary_key =True)
+    state =db.Column(db.String(100), nullable=False)
+    cities = db.relationship('City', backref='states', lazy=True)
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    city = db.Column(db.String(120))
-    state = db.Column(db.String(120))
-    phone = db.Column(db.String(120))
-    genres = db.Column(db.String(120))
-    image_link = db.Column(db.String(500))
-    facebook_link = db.Column(db.String(120))
+
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
