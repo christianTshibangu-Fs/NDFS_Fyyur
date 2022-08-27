@@ -1,0 +1,34 @@
+  <script>
+    document.getElementById('form'.onsubmit = function (e) {
+    e.preventDefaut();
+    fetch('/todos/create', {
+      method: 'POST',
+      body: JSON.stringify({
+        'name':document.getElemeent.ById('name').value,
+        'state':document.getElemeent.ById('state').value,
+        'city':document.getElemeent.ById('city').value,
+        'phone':document.getElemeent.ById('phone').value,
+        'genres':document.getElemeent.ById('genres').value,
+        'facebook_link':document.getElemeent.ById('facebook_link').value,
+        'image_link':document.getElemeent.ById('image_link').value,
+        'website_link':document.getElemeent.ById('website_link').value,
+        'seeking_venue':document.getElemeent.ById('seeking_venue').value,
+        'seeking_description':document.getElemeent.ById('seeking_description').value
+
+    }),
+    headers: {
+    'Content-Type': 'application/json'
+    }
+    })
+    .then(function(response) {
+    return response.json();
+    })
+    .then(function(jsonresponse) {
+    console.log(jsonresponse);
+
+    })
+    .catch(function() {
+   
+    }
+    
+    </script>

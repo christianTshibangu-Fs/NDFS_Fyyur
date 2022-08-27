@@ -1,9 +1,22 @@
 from datetime import datetime
+from operator import length_hint
+import re
+from xml.dom import ValidationErr
 from flask_wtf import Form, FlaskForm
 from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
 from wtforms.validators import DataRequired, AnyOf, URL
 
-class ShowForm(Form):
+
+def validate_phone(form,phone):
+    phone_const= '^([-][0-9]{3})[-][0-9]{3}[-][0-9]{4}$'
+    match = re.search(phone_const, phone.data)
+    if not match:
+        raise ValidationError(
+            'please insert validate phone number'
+        )
+    
+
+class ShowForm(FlaskForm):
     artist_id = StringField(
         'artist_id'
     )
@@ -16,7 +29,7 @@ class ShowForm(Form):
         default= datetime.today()
     )
 
-class VenueForm(Form):
+class VenueForm(FlaskForm):
     name = StringField(
         'name', validators=[DataRequired()]
     )
@@ -83,7 +96,7 @@ class VenueForm(Form):
         'address', validators=[DataRequired()]
     )
     phone = StringField(
-        'phone'
+    'phone',validators=[DataRequired(), validate_phone]
     )
     image_link = StringField(
         'image_link'
@@ -193,7 +206,7 @@ class ArtistForm(Form):
     )
     phone = StringField(
         # TODO implement validation logic for phone 
-        'phone'
+        'phone' ,validators=[DataRequired()]
     )
     image_link = StringField(
         'image_link'
@@ -231,7 +244,7 @@ class ArtistForm(Form):
         'website_link'
      )
 
-    seeking_venue = BooleanField( 'seeking_venue' )
+    seeking_venue = BooleanField( 'seeking_talent' )
 
     seeking_description = StringField(
             'seeking_description'
