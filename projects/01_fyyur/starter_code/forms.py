@@ -7,13 +7,13 @@ from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField
 from wtforms.validators import DataRequired, AnyOf, URL
 
 
-def validate_phone(form,phone):
-    phone_const= '^([-][0-9]{3})[-][0-9]{3}[-][0-9]{4}$'
-    match = re.search(phone_const, phone.data)
-    if not match:
-        raise ValidationError(
-            'please insert validate phone number'
-        )
+#def validate_phone(form,phone):
+#    phone_const= '^([-][0-9]{3})[-][0-9]{3}[-][0-9]{4}$'
+#    match = re.search(phone_const, phone.data)
+#    if not match:
+#        raise ValidationError(
+#            'please insert validate phone number'
+#        )
     
 
 class ShowForm(FlaskForm):
@@ -96,7 +96,7 @@ class VenueForm(FlaskForm):
         'address', validators=[DataRequired()]
     )
     phone = StringField(
-    'phone',validators=[DataRequired(), validate_phone]
+    'phone',validators=[DataRequired()]
     )
     image_link = StringField(
         'image_link'
@@ -139,9 +139,7 @@ class VenueForm(FlaskForm):
         'seeking_description'
     )
 
-
-
-class ArtistForm(Form):
+class ArtistForm(FlaskForm):
     name = StringField(
         'name', validators=[DataRequired()]
     )

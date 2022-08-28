@@ -3,11 +3,10 @@
 {% block content %}
   <div class="form-wrapper">
     <form method="post" class="form" action="/artists/create">
-      {{ form.csrf_token }}
+      {{ form.hidden_tag() }}
       <h3 class="form-heading">List a new artist</h3>
       <div class="form-group">
         <label for="name">Name</label>
-        {{ form.csrf_token }}
         {{ form.name(class_ = 'form-control', autofocus = true, id='name') }}
       </div>
       <div class="form-group">
